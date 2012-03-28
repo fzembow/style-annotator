@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="http://cloud.cs50.net/~fzembow/static/js/sh_main.min.js"></script>
+    <script type="text/javascript" src="http://cloud.cs50.net/~fzembow/static/js/sh_c.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="http://cloud.cs50.net/~fzembow/static/css/sh_nedit.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Armata' rel='stylesheet' type='text/css'>
+    <style>
+      html,body{
+        padding:0;
+        margin:0;
+        border:0;
+        font-family: 'Armata', sans-serif;
+      }
+      div#wrap{
+        position:relative;
+        min-width:600px;
+      }
+      div.linewrap{
+        overflow:hidden;
+        min-height:13px;
+      }
+      div.linewrap:hover{
+        background-color:#eee;
+      }
+      span.line_no{
+        float:left;
+        font-size:11px;
+        width:50px;
+        text-align:right;
+        padding-right:10px;
+        font-family:monospace;
+        box-sizing:border-box;
+
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+      }
+      span.line_no a{
+        color:#aaa;
+        text-decoration:none;
+      }
+      span.line_no a:hover{
+        color:blue;
+        text-decoration:underline;
+      }
+      div.linewrap:hover span.line_no{
+        font-weight:bold;
+      }
+      pre.line{
+        font-size:11px;
+        margin:0;
+        display:block;
+        float:left;
+        width:600px;
+        overflow:hidden;
+        background-color:inherit;
+      }
+      pre.line:hover{
+        overflow-x:auto;
+      }
+      span.annotation{
+        background-color:#ccc;
+        padding:0px 10px;
+        font-size:11px;
+        box-sizing:border-box;
+        display:block;
+        margin-left:10px;
+        float:left;
+        width:300px;
+      }
+      @media all and (max-width: 650px){
+        span.line_no{
+          display:none;
+        }
+        span.annotation{
+          margin-left:10px !important;
+        }
+ 
+      }
+
+      @media all and (max-width: 970px){
+        span.annotation{
+          margin-left:60px;
+        }
+      }
+ 
+    </style>
+    <script>
+      $(document).ready(function(){
+        sh_highlightDocument();
+      });
+
+      function onAnntationMouseover(e){
+        console.log("hey");
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>Assignment</h1>
+    <div id="wrap">
+ 
+% for line_no in range(len(lines)):
+<div id='${line_no}' class='linewrap'>
+<span class="line_no"><a href="#${line_no}">${line_no}</a></span><pre class="line sh_c">${lines[line_no]}</pre>
+  % if line_no in annotations:
+<span class='annotation'>${annotations[line_no]}</span>
+  % else:
+<span class='no_annotation'></span>
+  % endif
+</div>             
+% endfor
+    </div>
+  </body>
+</html>
+

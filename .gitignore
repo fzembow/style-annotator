@@ -1,0 +1,5 @@
+*.pyc
+lextab.py
+yacctab.py
+.DS_Store
+third_party/*
