@@ -17,7 +17,7 @@ __author__ = "Fil Zembowicz (fil@filosophy.org)"
 
 LINE_LENGTH_THRESHOLD = 120 # when to warn about too wide lines
 MAX_WHITESPACE_LINES = 3 # most consecutive whitespace lines to allow
-MAX_NON_WHITESPACE_LINES = 8 # most consecutive whitespace lines to allow
+MAX_NON_WHITESPACE_LINES = 8 # most consecutive non-whitespace lines to allow
 KEYWORDS = ["for", "if", "else", "while"];
 
 import signal, re, string
@@ -392,7 +392,8 @@ class FeatureNotEnoughWhitespace(Feature):
             self.add_to_annotations(start_line, error, annotations)
           no_whitespace_run = 0
         else:
-          no_whitespace_run += 1
+          if 0 not in code.levels[line_no]:
+            no_whitespace_run += 1
           
       elif not is_whitespace_line(line) and not is_comment(line) and level:
         levels = set(level)

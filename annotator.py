@@ -115,7 +115,7 @@ def find_c_files(base):
 def try_features(base):
   for c_file in find_c_files(base):
     try:
-      code = Code(c_file)
+      code = Code(filename=c_file)
     except features.TimedOutExc:
       print "timed out parsing code"
       continue
