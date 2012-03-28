@@ -55,7 +55,7 @@ class testCodeHelpers(unittest.TestCase):
   """A test class for code parsing utilities"""
   
   def test_linebreak_indices(self):
-    from utils import get_linebreak_indices
+    from annotator import get_linebreak_indices
     a = "Begin\n\nThis is the third line\nAnd this is the fourth\nEnd of file"
     indices = get_linebreak_indices(a)
     self.assertEqual(len(indices), 4)

@@ -4,7 +4,7 @@
 
 __author__ = "Fil Zembowicz (fil@filosophy.org)"
 
-from utils import annotate, get_text, Code
+from annotator import annotate, get_text, Code
 from mako.template import Template
 from mako.runtime import Context
 from StringIO import StringIO
@@ -22,7 +22,7 @@ def render(filename):
   code = Code(filename)
   annotations = annotate(code)
 
-  template = Template(filename="templates/assignment.txt")
+  template = Template(filename="templates/annotated.txt")
   buf = StringIO()
   ctx = Context(buf, lines=code.lines, annotations=annotations)
   template.render_context(ctx)

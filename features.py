@@ -30,11 +30,13 @@ def deadline(timeout, *args):
       raise TimedOutExc()
 
     def new_f(*args):
-
-      signal.signal(signal.SIGALRM, handler)
-      signal.alarm(timeout)
-      return f(*args)
-      signa.alarm(0)
+      
+      try:
+        signal.signal(signal.SIGALRM, handler)
+        signal.alarm(timeout)
+        return f(*args)
+      except ValueError:
+        return f(*args)
 
     new_f.__name__ = f.__name__
     return new_f
@@ -113,7 +115,11 @@ def get_indent_levels(lines):
       # parens by themselves -- allow to be indented one
       if is_paren(line):
         levels[line_no] += [new_depth + 1]
-
+      # line starts with } and ends with {, asjust to be one lessj
+      if stripped.startswith("}") and stripped.endswith("{"):
+        levels[line_no].remove(new_depth)
+        levels[line_no] += [new_depth - 1]
+        
     # adjustments to next line below
 
     # open parens: next line should be indented

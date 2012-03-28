@@ -8,7 +8,6 @@ Miscellaneous utilities for assisting in processing assignments
 __author__ = "Fil Zembowicz (fil@filosophy.org)"
 
 import os, sys, re
-from pycparser import c_parser, c_ast, parse_file
 from subprocess import Popen, PIPE
 from features import test_feature_list, production_feature_list, get_indent_levels, get_ignore_lines, FeatureIndentation, strip
 import features
@@ -20,12 +19,15 @@ import features
 class Code:
   """Wrapper for holding information about a single file of code"""
 
-  def __init__(self, filename=None):
-    if filename == None:
-      raise AttributeError("need a filename")
+  def __init__(self, text=None, filename=None):
+    if filename == None and text == None:
+      raise AttributeError("need a filename or text")
       return
-    self.filename = filename
-    self.text = get_text(filename)
+    if filename:
+      self.filename = filename
+      self.text = get_text(filename)
+    elif text:
+      self.text = text
     self.lines = self.text.split("\n")
     self.linebreak_indices = get_linebreak_indices(self.text)
     self.levels = get_indent_levels(self.lines)
@@ -39,7 +41,7 @@ class Code:
         self.stripped.append(strip(line))
 
   def get_lines_for_span(self, span):
-    """Given a span of character indices (start, end), finds the line nos"""
+    """Given a span of character indices (start, end) into the code, finds the line nos"""
     start, end = span
     startline = 0
     for line_index, char_index in enumerate(self.linebreak_indices):
@@ -86,16 +88,6 @@ def get_cpp(filename, cpp_path='cpp', cpp_args=''):
                 stdout=PIPE,
                 universal_newlines=True)
   return pipe.communicate()[0]
-
-def get_ast(text, filename="<none>"):
-  """Parse preprocessed C code and return the AST."""
-  parser = c_parser.CParser()
-  return parser.parse(text, filename)
-
-def get_ast_from_file(filename):
-  """Parse preprocessed C code and return the AST."""
-  text = get_cpp(filename)
-  return get_ast(text, filename)
 
 #
 # FILE MANIPULATION
