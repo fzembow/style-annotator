@@ -28,7 +28,10 @@ def process():
     code = Code(text=code_input)
     annotations = annotate(code)
     
-    template = Template(filename="templates/annotated.txt")
+    template = Template(filename="templates/annotated.txt",
+                        default_filters=['decode.utf8'],
+                        input_encoding='utf-8',
+                        output_encoding='utf8')
     return template.render(lines=code.lines, annotations=annotations)
   else:
     return "make sure you pasted code"    

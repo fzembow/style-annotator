@@ -275,7 +275,7 @@ class FeatureIndentation(Feature):
           continue
 
       indent = get_indent(line) 
-      if indent not in expected_indents:
+      if expected_indents and indent not in expected_indents:
 
         error = "expected indent %i, got %i" % (expected_indents[0], indent)
         self.add_to_annotations(line_no, error, annotations)

@@ -11,6 +11,7 @@ import os, sys, re
 from subprocess import Popen, PIPE
 from features import test_feature_list, production_feature_list, get_indent_levels, get_ignore_lines, FeatureIndentation, strip
 import features
+from mako.template import Template
 
 #
 # INPUT MANIPULATION
@@ -112,6 +113,7 @@ def find_c_files(base):
       if ext == ".c":
         yield abspath
 
+# tries the features in test_feature_list on all of the files in a directory
 def try_features(base):
   for c_file in find_c_files(base):
     try:
@@ -124,6 +126,39 @@ def try_features(base):
       print c_file
       print annotations
       print
+
+# tries the features in test_feature_list on all of the files in a directory
+def render_features(base, target):
+  for c_file in find_c_files(base):
+    try:
+      code = Code(filename=os.path.join(base, c_file))
+      annotations = annotate(code)
+
+      relpath = c_file[len(base):]
+
+      template = Template(filename="templates/annotated.txt",
+                          default_filters=['decode.utf8'],
+                          input_encoding='utf-8',
+                          output_encoding='utf8')
+      try:
+        html = template.render(lines=code.lines, annotations=annotations)
+      except UnicodeDecodeError:
+        continue
+
+      # rename to .html, make directory if necessary
+      target_fname = os.path.splitext(os.path.join(target, relpath))[0] + ".html"
+      target_dir = os.path.dirname(target_fname)
+      if target_dir and not os.path.exists(target_dir):
+        os.makedirs(os.path.join(target, target_dir))
+
+      f = open(target_fname, "w")
+      f.write(html)
+
+
+    except features.TimedOutExc:
+      print "timed out parsing code"
+      continue
+  #TODO: chmod 755 dirs and 644 files
 
 def show_indent(f):
   code = get_text(f)
@@ -152,6 +187,8 @@ def main():
     command = sys.argv[1]
     if command == "test":
       try_features("/home/fzembow/psets/")
+    if command == "render":
+      render_features("/home/fzembow/psets/", "/home/fzembow/public_html/debug/")
     elif command == "indent":
       filename = sys.argv[2]
       show_indent(filename)
