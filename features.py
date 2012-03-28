@@ -321,6 +321,13 @@ class FeatureInconsistentBrackets(Feature):
     for index, occurence in enumerate(occurences):
       if processed_occurences[index] != most_common:
 
+        # allow exception if it's flush left. some people start code blocks with a { on the next line
+        # when all other code is ) { style
+        # if flush left is not appropriate, the indent checker will catch it instead
+        match = occurences[index].group()
+        if match.count("\n{") == 1:
+          continue
+
         # look up the corresponding line to the occurence
         span = occurence.span()
         start, end = code.get_lines_for_span(span)
