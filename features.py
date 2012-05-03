@@ -228,13 +228,12 @@ class FeatureSpaceAfterKeyword(Feature):
   def __repr__(self):
     return "Keyword missing a space after"
 
-  keywords = ["if", "for", "while"]
-
   def compute(self, code, annotations):
+    keywords = ["if", "for", "while"]
     for line_no, line in enumerate(code.stripped):
       for keyword in keywords:
-        if re.match(r"\b%s\(" % keyword, bad):
-          error = "The keyword %s should have a space after, to not confuse with a function" % keyword
+        if re.match(r"\b%s\(" % keyword, line):
+          error = "The keyword '%s' should have a space after, to not confuse with a function" % keyword
           self.add_to_annotations(line_no, error, annotations)
 
 
