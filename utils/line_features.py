@@ -7,7 +7,7 @@ def strip(line):
 
 def is_comment(line):
   """Whether a line is a comment"""
-  return re.match(r"^ *?(?://|/\*)",line) is not None
+  return re.match(r"^\s*?(?://|/\*)",line) is not None
 
 def is_paren(line):
   """Finds whether a line is a paren"""

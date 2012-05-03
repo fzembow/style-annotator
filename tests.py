@@ -29,8 +29,10 @@ class testTextHelpers(unittest.TestCase):
     from utils.line_features import is_comment
     self.assertEqual(is_comment("  // comment "), True)
     self.assertEqual(is_comment("  /* comment "), True)
+    self.assertEqual(is_comment("\t\t// comment "), True)
     self.assertEqual(is_comment("  Something(); // comment "), False)
     self.assertEqual(is_comment("  Something();  "), False)
+    self.assertEqual(is_comment("    "), False)
 
   def test_is_paren(self):
     from utils.line_features import is_paren

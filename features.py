@@ -185,6 +185,23 @@ class FeatureExcessiveWhitespace(Feature):
           self.add_to_annotations(start_line, error, annotations)
         whitespace_run = 0
 
+
+@deadline(1)
+class FeatureInlineComments(Feature):
+  """Finds places where inline comments don't conform"""
+
+  def __repr__(self):
+    return "Poorly formatted inline comment"
+
+  def compute(self, code, annotations):
+    for line_no, line in enumerate(code.lines):
+      _line = line.strip()
+      if _line.startswith("//"):
+        if _line[2:3] != " ":
+          error = "Need single space after // for inline comment"
+          self.add_to_annotations(line_no, error, annotations)
+
+
 @deadline(1)
 class FeatureNotEnoughWhitespace(Feature):
   """Finds places where there are runs of unindented, unbroken code"""
@@ -252,4 +269,5 @@ production_feature_list = [FeatureIndentation,
                 FeatureExcessiveWhitespace]
 
 test_feature_list = [
-                FeatureNotEnoughWhitespace]
+                FeatureInlineComments]
+#                FeatureNotEnoughWhitespace]
