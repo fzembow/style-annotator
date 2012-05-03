@@ -5,8 +5,11 @@ Author: Fil Zembowicz     (fil@filosophy.org)
 ### Dependencies
 to run the server:
 Flask
+
     easy_install Flask
+
 Mako templating
+
     easy_install mako
 
 ### Usage

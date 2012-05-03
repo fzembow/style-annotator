@@ -9,8 +9,10 @@ __author__ = "Fil Zembowicz (fil@filosophy.org)"
 
 import os, sys, re
 from subprocess import Popen, PIPE
-from features import test_feature_list, production_feature_list, get_indent_levels, get_ignore_lines, FeatureIndentation, strip
-import features
+from features import test_feature_list, production_feature_list, FeatureIndentation
+from utils.code_features import get_indent_levels, get_ignore_lines
+from utils.line_features import strip
+from utils.deadline import TimedOutExc
 from mako.template import Template
 
 #
@@ -18,11 +20,11 @@ from mako.template import Template
 #
 
 class Code:
-  """Wrapper for holding information about a single file of code"""
+  """Wrapper for holding information about a single file of code."""
 
   def __init__(self, text=None, filename=None):
     if filename == None and text == None:
-      raise AttributeError("need a filename or text")
+      raise AttributeError("need a filename or text for a Code object")
       return
     if filename:
       self.filename = filename
@@ -42,7 +44,7 @@ class Code:
         self.stripped.append(strip(line))
 
   def get_lines_for_span(self, span):
-    """Given a span of character indices (start, end) into the code, finds the line nos"""
+    """Given a span of character indices (start, end) into the code, finds the line nos."""
     start, end = span
     startline = 0
     for line_index, char_index in enumerate(self.linebreak_indices):
@@ -50,10 +52,10 @@ class Code:
         startline = line_index 
       if char_index > end:
         return (startline, line_index)
-
     return startline, len(self.linebreak_indices)
 
   def get_ast(self):
+    """Get the AST for the code."""
     if not self.ast:
       self.ast = get_ast_from_file(self.filename)
     return self.ast
@@ -95,12 +97,13 @@ def get_cpp(filename, cpp_path='cpp', cpp_args=''):
 #
 
 def annotate(code, feature_list=production_feature_list):
+  """Takes a Code object and a feature list and returns all of the features"""
   annotations = {}
   for feature in feature_list:
     f = feature()
     try: 
       f.compute(code, annotations)
-    except features.TimedOutExc as e:
+    except TimedOutExc as e:
       print "Timed out execution"
   return annotations
 
@@ -113,12 +116,14 @@ def find_c_files(base):
       if ext == ".c":
         yield abspath
 
-# tries the features in test_feature_list on all of the files in a directory
 def try_features(base):
+  """Tries the features in test_feature_list on all of the files in a directory.
+    
+     Prints the resulting annotations"""
   for c_file in find_c_files(base):
     try:
       code = Code(filename=c_file)
-    except features.TimedOutExc:
+    except TimedOutExc:
       print "timed out parsing code"
       continue
     annotations = annotate(code, feature_list=test_feature_list)
@@ -127,8 +132,10 @@ def try_features(base):
       print annotations
       print
 
-# tries the features in test_feature_list on all of the files in a directory
 def render_features(base, target):
+  """Tries the features in test_feature_list on all of the files in a directory.
+  
+     Renders annotated code to files"""
   for c_file in find_c_files(base):
     try:
       code = Code(filename=os.path.join(base, c_file))
@@ -154,13 +161,13 @@ def render_features(base, target):
       f = open(target_fname, "w")
       f.write(html)
 
-
-    except features.TimedOutExc:
+    except TimedOutExc:
       print "timed out parsing code"
       continue
   #TODO: chmod 755 dirs and 644 files
 
 def show_indent(f):
+  """Utility function to show the expected and actual indents for a file"""
   code = get_text(f)
   lines = code.split("\n")
   levels = get_indent_levels(lines)

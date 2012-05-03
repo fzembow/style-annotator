@@ -13,40 +13,40 @@ class testTextHelpers(unittest.TestCase):
   """A test class for text processing utility functions"""
 
   def test_strip(self):
-    from features import strip
+    from utils.line_features import strip
     self.assertEqual(strip("    int a = 3;   "), "int a = 3;")
     self.assertEqual(strip("    int a = 3; // a is set to 3   "), "int a = 3;")
     self.assertEqual(strip("    int a = 3; /* a is set to 3 */  "), "int a = 3;")
 
   def test_get_indent(self):
-    from features import get_indent
+    from utils.line_features import get_indent
     self.assertEqual(get_indent("int a = 3; "), 0)
     self.assertEqual(get_indent(" int a = 3; "), 1)
     self.assertEqual(get_indent("    int a = 3; "), 4)
     self.assertEqual(get_indent("\t\tint a = 3; "), 2)
 
   def test_is_comment(self):
-    from features import is_comment
+    from utils.line_features import is_comment
     self.assertEqual(is_comment("  // comment "), True)
     self.assertEqual(is_comment("  /* comment "), True)
     self.assertEqual(is_comment("  Something(); // comment "), False)
     self.assertEqual(is_comment("  Something();  "), False)
 
   def test_is_paren(self):
-    from features import is_paren
+    from utils.line_features import is_paren
     self.assertEqual(is_paren("     {   "), True)
     self.assertEqual(is_paren("}"), True)
     self.assertEqual(is_paren("(){"), False)
     self.assertEqual(is_paren("    "), False)
 
   def test_is_whitespace_line(self):
-    from features import is_whitespace_line
+    from utils.line_features import is_whitespace_line
     self.assertEqual(is_whitespace_line(""), True)
     self.assertEqual(is_whitespace_line("\t\t  \t"), True)
     self.assertEqual(is_whitespace_line("\t\t {\t"), False)
 
   def test_is_incomplete_statement(self):
-    from features import is_incomplete_statement
+    from utils.line_features import is_incomplete_statement
     self.assertEqual(is_incomplete_statement("for(int i = 0; i < 10; i++)"), True)
     self.assertEqual(is_incomplete_statement(""), True)
     self.assertEqual(is_incomplete_statement("printf('hey');"), False)

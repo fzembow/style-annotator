@@ -13,8 +13,6 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-DEBUG = True
-
 @app.route("/")
 def main():
   
@@ -36,5 +34,11 @@ def process():
   else:
     return "make sure you pasted code"    
 
+def main():
+  if len(sys.argv) > 1 and sys.argv[1] == "debug":
+    app.run(debug=True)
+  else:
+   app.run(debug=False)
+
 if __name__ == "__main__":
-  app.run(debug=DEBUG)
+  main()
