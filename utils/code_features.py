@@ -73,6 +73,7 @@ def get_indent_levels(lines):
       if is_switch and is_comment(line):
         levels[line_no] += [new_depth - 1]
       # parens by themselves -- allow to be indented one
+      # TODO: remove this according to cs50 guidelines
       if is_paren(line):
         levels[line_no] += [new_depth + 1]
       # line starts with } and ends with {, asjust to be one lessj

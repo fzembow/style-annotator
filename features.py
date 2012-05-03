@@ -118,6 +118,7 @@ class FeatureLineLength(Feature):
         error = "line is too long"
         self.add_to_annotations(line_no, error, annotations)
 
+
 @deadline(1)
 class FeatureInconsistentBrackets(Feature):
   """Whether bracket is consistent after params"""
@@ -158,8 +159,8 @@ class FeatureInconsistentBrackets(Feature):
         start, end = code.get_lines_for_span(span)
         error = "inconsistent bracket placement"
         self.add_to_annotations(end, error, annotations) 
-
     return occurences 
+
 
 @deadline(1)
 class FeatureExcessiveWhitespace(Feature):
@@ -218,6 +219,24 @@ class FeatureCommentAtTop(Feature):
         error = "Each file should have a comment at the top"
         self.add_to_annotations(0, error, annotations)
       return
+
+
+@deadline(1)
+class FeatureSpaceAfterKeyword(Feature):
+  """Finds keywords that don't have a space after them"""
+
+  def __repr__(self):
+    return "Keyword missing a space after"
+
+  keywords = ["if", "for", "while"]
+
+  def compute(self, code, annotations):
+    for line_no, line in enumerate(code.stripped):
+      for keyword in keywords:
+        if re.match(r"\b%s\(" % keyword, bad):
+          error = "The keyword %s should have a space after, to not confuse with a function" % keyword
+          self.add_to_annotations(line_no, error, annotations)
+
 
 @deadline(1)
 class FeatureNotEnoughWhitespace(Feature):
@@ -288,5 +307,6 @@ production_feature_list = [FeatureIndentation,
                 FeatureCommentAtTop]
 
 test_feature_list = [
+                FeatureSpaceAfterKeyword
                 ]
 #                FeatureNotEnoughWhitespace]
