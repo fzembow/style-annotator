@@ -203,6 +203,23 @@ class FeatureInlineComments(Feature):
 
 
 @deadline(1)
+class FeatureCommentAtTop(Feature):
+  """Finds files that are missing a comment at the top"""
+
+  def __repr__(self):
+    return "Comment missing at top of file"
+
+  def compute(self, code, annotations):
+    for line_no, line in enumerate(code.lines):
+      _line = line.strip()
+      if not _line:
+        continue
+      if not is_comment(_line):
+        error = "Each file should have a comment at the top"
+        self.add_to_annotations(0, error, annotations)
+      return
+
+@deadline(1)
 class FeatureNotEnoughWhitespace(Feature):
   """Finds places where there are runs of unindented, unbroken code"""
 
@@ -266,8 +283,10 @@ class FeatureMultipleStatementsPerLine:
 production_feature_list = [FeatureIndentation,
                 FeatureLineLength,
                 FeatureInconsistentBrackets,
-                FeatureExcessiveWhitespace]
+                FeatureExcessiveWhitespace,
+                FeatureInlineComments,
+                FeatureCommentAtTop]
 
 test_feature_list = [
-                FeatureInlineComments]
+                ]
 #                FeatureNotEnoughWhitespace]
