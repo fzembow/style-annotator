@@ -1,13 +1,44 @@
 
-import json, os, csv
+import json, os, csv, sys
 from annotator import Code, annotate
 
+# specs for 2011 .c code
 PSET_1_SPEC = """
 {
   "base_dir": "/home/fzembow/psets/2011/pset1",
   "files": ["chart.c", "greedy.c", "pennies.c"]
 }
 """
+
+PSET_2_SPEC = """
+{
+  "base_dir": "/home/fzembow/psets/2011/pset2",
+  "files": ["caesar.c", "oldman.c", "vigenere.c"]
+}
+"""
+
+PSET_3_SPEC = """
+{
+  "base_dir": "/home/fzembow/psets/2011/pset3",
+  "files": ["fifteen/fifteen.c", "find/helpers.c", "find/generate.c"]
+}
+"""
+
+PSET_4_SPEC = """
+{
+  "base_dir": "/home/fzembow/psets/2011/pset4",
+  "files": ["sudoku.c"]
+}
+"""
+
+PSET_5_SPEC = """
+{
+  "base_dir": "/home/fzembow/psets/2011/pset5",
+  "files": ["bmp/resize.c", "bmp/whodunit.c", "jpg/recover.c" ]
+}
+"""
+
+
 PSET_6_SPEC = """
 {
   "base_dir": "/home/fzembow/psets/2011/pset6",
@@ -24,11 +55,24 @@ STATS = {
   3:[]
 }
 
+SPECS = {
+  "pset1":PSET_1_SPEC,
+  "pset2":PSET_2_SPEC,
+  "pset3":PSET_3_SPEC,
+  "pset4":PSET_4_SPEC,
+  "pset5":PSET_5_SPEC,
+  "pset6":PSET_6_SPEC,
+}
 
 def main():
-  grades = load_grades(GRADES_CSV, "pset1")
-  eval_pset(PSET_1_SPEC, grades)
-  get_aggregate_stats(STATS)
+  if len(sys.argv) > 1:
+    pset = sys.argv[1]
+    grades = load_grades(GRADES_CSV, pset)
+    eval_pset(SPECS[pset], grades)
+    get_aggregate_stats(STATS)
+  else:
+    print "please specify pset1, pset2, etc"
+    sys.exit(1)
 
 
 def load_grades(csv_file, pset):
